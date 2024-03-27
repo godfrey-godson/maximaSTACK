@@ -1,1 +1,1 @@
-random_list:makelist(rand(5),i,1,8);
+random_list:makelist(rand(5)+i,i,1,8);
