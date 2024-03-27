@@ -1,3 +1,5 @@
 new_data:makelist(makelist(rand(j),j,1,5),i,1,4); /* Emma: this is a list I'm using in multiple questions. Please do not edit! */
 
 new_data_2:makelist(makelist(rand(j),j,1,6),i,1,7); /* Godfrey: I need a similar table but of a different structure */
+
+new_data_3:makelist(makelist(rand(j),j,1,6),i,1,rand(4)+1);
