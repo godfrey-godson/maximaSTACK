@@ -1,0 +1,88 @@
+/* Defined the percentages */  
+ap1: rand(3)+2;  
+ap2: rand_with_prohib(1,10,[ap1]);
+ap3: rand_with_prohib(1,10,[ap1,ap2]); 
+ap4: rand_with_prohib(1,10,[ap1,ap2,ap3]);  
+ap5: rand_with_prohib(1,10,[ap1,ap2,ap3,ap4]);
+ap6: rand_with_prohib(1,10,[ap1,ap2,ap3,ap4,ap5]);
+ap7: rand_with_prohib(1,10,[ap1,ap2,ap3,ap4,ap5,ap6]);
+ap8: rand_with_prohib(1,10,[ap1,ap2,ap3,ap4,ap5,ap6,ap7]);
+ap9: rand_with_prohib(1,10,[ap1,ap2,ap3,ap4,ap5,ap6,ap7,ap8]);
+ap10: rand_with_prohib(1,10,[ap1,ap2,ap3,ap4,ap5,ap6,ap7,ap8,ap9]);
+
+
+wasterate_y1:rand_with_step(1,7,1); 
+wasterate_y2:rand_with_prohib(1,7,[wasterate_y1]);
+wasterate_y3:rand_with_prohib(1,7,[wasterate_y1,wasterate_y2]); 
+wasterate_y4:rand_with_prohib(1,7,[wasterate_y1,wasterate_y2,wasterate_y3]); 
+wasterate_y5:rand_with_prohib(1,7,[wasterate_y1,wasterate_y2,wasterate_y3,wasterate_y4]); 
+wasterate_y6:rand_with_prohib(1,9,[wasterate_y1,wasterate_y2,wasterate_y3,wasterate_y4]);
+wasterate_y7:rand_with_prohib(1,9,[wasterate_y1,wasterate_y2,wasterate_y3,wasterate_y4,wasterate_y5]);
+wasterate_y8:rand_with_prohib(1,9,[wasterate_y1,wasterate_y2,wasterate_y3,wasterate_y4,wasterate_y5,wasterate_y6]);
+wasterate_y9:rand_with_prohib(1,9,[wasterate_y1,wasterate_y2,wasterate_y3,wasterate_y4,wasterate_y5, wasterate_y6,wasterate_y7]);
+wasterate_y10:10; 
+ 
+p1:decimalplaces(((wasterate_y1*100)/1000),3);
+p2:decimalplaces(((wasterate_y2*100)/1000),3);
+p3:decimalplaces(((wasterate_y3*100)/1000),3); 
+p4:decimalplaces(((wasterate_y4*100)/1000),3); 
+p5:decimalplaces(((wasterate_y5*100)/1000),3); 
+p6:decimalplaces(((wasterate_y6*100)/1000),3); 
+p7:decimalplaces(((wasterate_y7*100)/1000),3);
+p8:decimalplaces(((wasterate_y8*100)/1000),3); 
+p9:decimalplaces(((wasterate_y9*100)/1000),3); 
+p10:decimalplaces(((wasterate_y10*100)/1000),3);
+
+
+/* waste per year */ 
+waste_per_year: rand_with_step(10,50,10); 
+years:makelist(i,i,0,10);
+
+/* Initial amount of waste */ 
+l0: rand([1000, 10000]); /*the 100*/
+/* Calculate lx for each year */ 
+l1: l0 - p1 * l0; 
+l2: l1 - p2 * l1; 
+l3: l2 - p3 * l2; 
+l4: l3 - p4 * l3; 
+l5: l4 - p5 * l4; 
+l6: l5 - p6 * l5;  
+l7: l6 - p7 * l6; 
+l8: l7 - p8 * l7; 
+l9: l8 - p9 * l8; 
+l10: l9 - p10*l9;
+lx: round([l0, l1, l2, l3, l4, l5, l6, l7, l8, l9]);
+
+/* Define lists for lx and lx+n for each year */
+lx_values:round([l0, l1, l2, l3, l4, l5,l6,l7,l8,l9]) ;
+lx_n_values: round([l1, l2, l3, l4, l5,l6,l7,l8,l9,l10]);  
+
+/* Calculate ndx and nqx for each year*/ 
+ndx_values: makelist(lx_values[i] - lx_n_values[i], i, 1, length(lx_values));
+nqx_values: decimalplaces(ndx_values / lx_values,2); 
+
+/* Calculate midpoint between corresponding elements */ 
+/* Adding +0.00001 to avoid banker's rounding (we always want rounding up if we get .5). */
+midpoint_values_Lx:round (makelist((lx_values[i] + lx_n_values[i]) / 2 + 0.0000001, i, 1, length(lx_values)));
+
+/*cumulative frequencies*/
+midpoint_values_Lxr:reverse(midpoint_values_Lx);
+Tx: makelist(sum(midpoint_values_Lxr[i], i, 1, j), j, 1, length(midpoint_values_Lxr)); 
+
+/*sum(midpoint_values_Lx);*/ 
+total_Lx:sum(midpoint_values_Lxr[i],i,1,length(midpoint_values_Lxr)); 
+Tx_values:reverse(Tx);
+
+e0x_values: decimalplaces(makelist(Tx_values[i]/lx_values[i], i, 1, length(lx_values)),2);
+
+
+
+/*Model answers*/
+
+ta5:midpoint_values_Lx[3];
+ta6:midpoint_values_Lx[5];
+ta7:Tx_values[1];
+ta8:Tx_values[4];
+number_workers:rand_with_step(1000,10000,500);
+
+ta11:round(float(lx[1]*(number_workers/ta7)));
