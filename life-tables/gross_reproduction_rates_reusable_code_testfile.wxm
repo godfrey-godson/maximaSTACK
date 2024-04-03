@@ -28,10 +28,7 @@ count_7: children_counts[7];
 total_children: sum(children_counts[i],i,1,length(children_counts));
 
 female_children_count:decimalplaces(children_counts*(female_ratio/percentage),4);
-/*female_children_counts:decimalplaces(female_children_countz,2); 
-female_children_count1:round(female_children_countz); 
-female_children_counts_1:is(abs((female_children_counts-female_children_count1))=0.0);
-female_children_count: if female_children_counts_1=true then female_children_count1 else female_children_counts;*/
+
 total_female_children_count:sum(female_children_count[i],i,1,length(female_children_count));
 
 /* Calculate the female gross reproduction rate (GRR) */
